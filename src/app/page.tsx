@@ -13,8 +13,8 @@ import {
 const stories = [
   {
     id: 1,
-    title: "The Enchanted Forest",
-    description: "Explore a magical forest full of mythical creatures.",
+    title: "The Dark Forest",
+    description: "Explore a forest full of psychological mysteries.",
   },
   {
     id: 2,
@@ -38,14 +38,14 @@ export default function StoryPickerPage() {
 
   const handleStartAdventure = () => {
     if (selectedStory !== null) {
-      router.push(`/chat/${selectedStory}`);
+      router.push(`/adventure/${selectedStory}`);
     } else {
       alert("Please select a story");
     }
   };
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="px-8 pb-8 pt-24">
       <h1 className="text-3xl font-bold mb-6 text-center">
         Choose Your Adventure
       </h1>
