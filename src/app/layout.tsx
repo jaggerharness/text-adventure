@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,16 +33,21 @@ export default function RootLayout({
       >
         <section
           className={
-            "flex flex-col items-start gap-2 border-b border-border/40 py-8 px-2"
+            "flex flex-row justify-between items-center p-4 border-b border-border/40"
           }
         >
-          <Image
-            aria-hidden
-            src="/StoryFlux.svg"
-            alt="File icon"
-            width={250}
-            height={250}
-          />
+          <Link href="/">
+            <Image
+              aria-hidden
+              src="/StoryFlux.svg"
+              alt="File icon"
+              width={250}
+              height={250}
+            />
+          </Link>
+          <Link href={"/adventures"}>
+            <Button>Adventures</Button>
+          </Link>
         </section>
         {children}
       </body>
