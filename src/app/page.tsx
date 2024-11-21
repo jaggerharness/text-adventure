@@ -1,14 +1,13 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const stories = [
   {
@@ -28,51 +27,28 @@ const stories = [
   },
 ];
 
-export default function StoryPickerPage() {
-  const [selectedStory, setSelectedStory] = useState<number | null>(null);
-  const router = useRouter();
-
-  const handleStorySelect = (id: number) => {
-    setSelectedStory(id);
-  };
-
-  const handleStartAdventure = () => {
-    if (selectedStory !== null) {
-      router.push(`/adventure/${selectedStory}`);
-    } else {
-      alert("Please select a story");
-    }
-  };
-
+export default function AdventurePickerPage() {
   return (
-    <div className="px-8 pb-8 pt-24">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Choose Your Adventure
-      </h1>
+    <div className="px-8 pb-8 pt-24 flex flex-col gap-4">
+      <h1 className="text-3xl font-bold text-center">Choose Your Adventure</h1>
+      <div className="relative">
+        <Search className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
+        <Input placeholder="Search adventures" className="pl-8" />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {stories.map((story) => (
-          <Card
-            key={story.id}
-            className={`cursor-pointer ${
-              selectedStory === story.id ? "border-2" : ""
-            }`}
-            onClick={() => handleStorySelect(story.id)}
-          >
+          <Card key={story.id}>
             <CardHeader>
               <CardTitle>{story.title}</CardTitle>
               <CardDescription>{story.description}</CardDescription>
             </CardHeader>
+            <CardFooter>
+              <Button className="mx-auto">Start Adventure</Button>
+            </CardFooter>
           </Card>
         ))}
       </div>
-      <div className="mt-8 flex justify-center">
-        <Button
-          onClick={handleStartAdventure}
-          disabled={selectedStory === null}
-        >
-          Start Adventure
-        </Button>
-      </div>
+      <div className="flex justify-center"></div>
     </div>
   );
 }
