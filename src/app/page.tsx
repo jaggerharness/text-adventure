@@ -2,10 +2,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BookOpen, Sparkles, Send } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function AdventurePickerPage() {
   return (
     <div className="min-h-screen">
+      <section
+        className={
+          "flex flex-row bg-primary-foreground justify-between items-center p-4 border-b border-border/40"
+        }
+      >
+        <Link href="/">
+          <Image
+            aria-hidden
+            src="/StoryFlux.svg"
+            alt="File icon"
+            width={250}
+            height={250}
+          />
+        </Link>
+        <Link href={"/adventures"}>
+          <Button>Adventures</Button>
+        </Link>
+      </section>
       <main>
         <section className="py-20 text-center">
           <div className="container mx-auto px-4">
