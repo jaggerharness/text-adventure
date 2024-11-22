@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <section
           className={
-            "flex flex-row justify-between items-center p-4 border-b border-border/40"
+            "flex flex-row bg-primary-foreground justify-between items-center p-4 border-b border-border/40"
           }
         >
           <Link href="/">

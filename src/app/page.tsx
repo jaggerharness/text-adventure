@@ -5,9 +5,9 @@ import Link from "next/link";
 
 export default function AdventurePickerPage() {
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen">
       <main>
-        <section className="py-20 text-center bg-primary-foreground">
+        <section className="py-20 text-center">
           <div className="container mx-auto px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 ">
               Welcome to StoryFlux
@@ -26,7 +26,7 @@ export default function AdventurePickerPage() {
           </div>
         </section>
 
-        <section className="py-20">
+        <section className="py-20  bg-primary-foreground">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center ">
               Features of StoryFlux
@@ -66,7 +66,7 @@ export default function AdventurePickerPage() {
           </div>
         </section>
 
-        <section className="py-20 bg-primary-foreground">
+        <section className="py-20">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 ">
               Join The Waiting List
@@ -86,7 +86,7 @@ export default function AdventurePickerPage() {
         </section>
       </main>
 
-      <footer className="border-t border-gray-800 py-8">
+      <footer className="border-t py-8  bg-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <p>
             &copy; {new Date().getFullYear()} StoryFlux. All rights reserved.
