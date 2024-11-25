@@ -14,7 +14,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "StoryFlux",
+  title: "TextVenture AI",
   description: "AI-powered, user-driven story generator",
 };
 

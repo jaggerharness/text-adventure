@@ -15,7 +15,7 @@ export default function AdventurePickerPage() {
         <Link href="/">
           <Image
             aria-hidden
-            src="/StoryFlux.svg"
+            src="/TextVenture.svg"
             alt="File icon"
             width={250}
             height={250}
@@ -29,7 +29,7 @@ export default function AdventurePickerPage() {
         <section className="py-20 text-center">
           <div className="container mx-auto px-4">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 ">
-              Welcome to StoryFlux
+              Welcome to TextVenture AI
             </h1>
             <p className="text-xl md:text-2xl mb-12 max-w-3xl mx-auto">
               Embark on a journey through time, space, and imagination. Join our
@@ -48,7 +48,7 @@ export default function AdventurePickerPage() {
         <section className="py-20  bg-primary-foreground">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center ">
-              Features of StoryFlux
+              Features of TextVenture AI
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
@@ -91,7 +91,7 @@ export default function AdventurePickerPage() {
               Join The Waiting List
             </h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Get notified when StoryFlux 1.0.0 is released!
+              Get notified when TextVenture AI 1.0.0 is released!
             </p>
             <form className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
               <Input
@@ -108,7 +108,8 @@ export default function AdventurePickerPage() {
       <footer className="border-t py-8  bg-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <p>
-            &copy; {new Date().getFullYear()} StoryFlux. All rights reserved.
+            &copy; {new Date().getFullYear()} TextVenture AI. All rights
+            reserved.
           </p>
         </div>
       </footer>

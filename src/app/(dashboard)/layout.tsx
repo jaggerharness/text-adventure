@@ -32,7 +32,7 @@ export default function Layout({
         <Link href="/">
           <Image
             aria-hidden
-            src="/StoryFlux.svg"
+            src="/TextVenture.svg"
             alt="File icon"
             width={250}
             height={250}
