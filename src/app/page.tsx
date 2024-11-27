@@ -9,7 +9,7 @@ export default function AdventurePickerPage() {
     <div className="min-h-screen">
       <section
         className={
-          "flex flex-row bg-primary-foreground justify-between items-center p-4 border-b border-border/40"
+          "flex flex-row justify-between items-center p-4 border-b border-border/40"
         }
       >
         <Link href="/">
@@ -45,7 +45,7 @@ export default function AdventurePickerPage() {
           </div>
         </section>
 
-        <section className="py-20  bg-primary-foreground">
+        <section className="py-20 border-x-0 border-y-2">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center ">
               Features of TextVenture AI
@@ -105,7 +105,7 @@ export default function AdventurePickerPage() {
         </section>
       </main>
 
-      <footer className="border-t py-8  bg-primary-foreground">
+      <footer className="border-t py-8 ">
         <div className="container mx-auto px-4 text-center">
           <p>
             &copy; {new Date().getFullYear()} TextVenture AI. All rights
