@@ -91,7 +91,7 @@ export default function AdventurePickerPage() {
               Join The Waiting List
             </h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Get notified when TextVenture AI 1.0.0 is released!
+              Get notified when TextVenture AI 1.0 is released!
             </p>
             <form className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
               <Input
