@@ -43,10 +43,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
               <Button
                 key={action.id}
                 variant="outline"
-                className="flex flex-col text-wrap h-fit"
+                className="text-left px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto text-wrap justify-start items-start"
               >
                 <span className="font-medium">{`Option ${index + 1}`}</span>
                 <span className="text-muted-foreground">{action.action}</span>
+                <span>{`DEBUG: Leads to: ${action.nextNodeId}`}</span>
               </Button>
             );
           })}
