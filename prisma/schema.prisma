@@ -19,7 +19,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Story Story[]
+  Story       Story[]
+  GameSession GameSession[]
 }
 
 model Account {
@@ -74,6 +75,8 @@ model Story {
   startNodeId String? @unique
   startNode   Node?   @relation("StoryStartNode", fields: [startNodeId], references: [id])
 
+  sessions GameSession[]
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -112,6 +115,22 @@ model Action {
   // Reference to next node
   nextNodeId String?
   nextNode   Node?   @relation("ActionToNode", fields: [nextNodeId], references: [id])
+
+  sessions GameSession[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model GameSession {
+  id      String @id @default(cuid())
+  userId  String
+  storyId String
+
+  user    User     @relation(fields: [userId], references: [id])
+  story   Story    @relation(fields: [storyId], references: [id])
+  actions Action[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

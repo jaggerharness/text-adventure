@@ -34,10 +34,8 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
         >
           {story?.startNode?.content}
         </div>
-        <div className="pt-4 w-full text-center font-extrabold text-2xl underline underline-offset-2">
-          Action Menu
-        </div>
-        <div className="grid sm:grid-cols-2 gap-2 w-full pt-4">
+        <div className="pt-4 w-full text-left text-xl">Actions:</div>
+        <div className="grid sm:grid-cols-2 gap-2 w-full">
           {story?.startNode?.actions.map((action, index) => {
             return (
               <Button
