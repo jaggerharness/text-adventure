@@ -18,7 +18,8 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  // Story     Story[]
+
+  Story Story[]
 }
 
 model Account {
@@ -65,9 +66,10 @@ model Story {
   title         String
   description   String?
   isAiGenerated Boolean @default(false)
-  createdBy     String?
+  userId        String
 
-  nodes Node[]
+  createdBy User   @relation(fields: [userId], references: [id])
+  nodes     Node[]
 
   startNodeId String? @unique
   startNode   Node?   @relation("StoryStartNode", fields: [startNodeId], references: [id])
@@ -86,10 +88,13 @@ model Node {
   story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
 
   // Each node has many actions
-  actions Action[]
+  actions Action[] @relation("NodeActions")
 
-  // This node can be the start of many Stories
+  // This node can be the start of a Story
   startedInStory Story? @relation("StoryStartNode")
+
+  // Action that leads to this node
+  incomingActions Action[] @relation("ActionToNode")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -102,7 +107,11 @@ model Action {
 
   // Each action belongs to a node
   nodeId String
-  node   Node   @relation(fields: [nodeId], references: [id])
+  node   Node   @relation("NodeActions", fields: [nodeId], references: [id])
+
+  // Reference to next node
+  nextNodeId String?
+  nextNode   Node?   @relation("ActionToNode", fields: [nextNodeId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

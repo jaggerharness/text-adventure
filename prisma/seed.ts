@@ -1,54 +1,94 @@
 import { prisma } from "../prisma";
 import { faker } from "@faker-js/faker";
 
-const users = Array.from({ length: 20 }).map(() => ({
-  name: faker.internet.displayName(),
-  email: faker.internet.exampleEmail(),
-}));
-
 async function main() {
   try {
-    // Create users
-    await prisma.user.createMany({ data: users });
-    const createdUsers = await prisma.user.findMany();
+    // Clear existing data to start fresh
+    await prisma.action.deleteMany();
+    await prisma.node.deleteMany();
+    await prisma.story.deleteMany();
+    await prisma.user.deleteMany();
 
-    // Create stories
-    const adventures = Array.from({ length: 20 }).map(() => ({
-      title: faker.book.title(),
-      description: faker.lorem.paragraph(),
-      isAiGenerated: false,
-      createdBy:
-        createdUsers[Math.floor(Math.random() * createdUsers.length)].id,
-    }));
-    await prisma.story.createMany({ data: adventures });
-    const createdStories = await prisma.story.findMany();
+    // Create Users
+    const users = await Promise.all(
+      Array.from({ length: 5 }).map(async () => {
+        return prisma.user.create({
+          data: {
+            email: faker.internet.email(),
+            name: faker.person.fullName(),
+            // Add any other user fields you might have
+          },
+        });
+      })
+    );
 
-    // Create story nodes and actions
-    for (const story of createdStories) {
-      const nodes = Array.from({ length: 5 }).map(() => ({
-        storyId: story.id,
-        content: faker.lorem.paragraphs(),
-      }));
-      await prisma.node.createMany({ data: nodes });
-      const createdStoryNodes = await prisma.node.findMany({
-        where: { storyId: story.id },
-      });
+    // Create Stories for each user
+    for (const user of users) {
+      await Promise.all(
+        Array.from({ length: faker.number.int({ min: 1, max: 3 }) }).map(
+          async () => {
+            // Create story
+            const story = await prisma.story.create({
+              data: {
+                title: faker.lorem.sentence(),
+                description: faker.lorem.paragraph(),
+                isAiGenerated: faker.datatype.boolean(),
+                userId: user.id,
+              },
+            });
 
-      await prisma.story.update({
-        where: { id: story.id },
-        data: { startNodeId: createdStoryNodes[0].id },
-      });
+            // Create Nodes for this story
+            const nodes = await Promise.all(
+              Array.from({ length: faker.number.int({ min: 3, max: 7 }) }).map(
+                async () => {
+                  return prisma.node.create({
+                    data: {
+                      content: faker.lorem.paragraph(),
+                      storyId: story.id,
+                    },
+                  });
+                }
+              )
+            );
 
-      const storyActions = createdStoryNodes.flatMap((node) =>
-        Array.from({ length: 2 }).map(() => ({
-          nodeId: node.id,
-          action: faker.lorem.sentence(),
-        }))
+            // Create Actions for each node
+            for (const node of nodes) {
+              await Promise.all(
+                Array.from({
+                  length: faker.number.int({ min: 1, max: 3 }),
+                }).map(async () => {
+                  // Randomly select next node or leave it null
+                  const nextNode =
+                    nodes[faker.number.int({ min: 0, max: nodes.length - 1 })];
+
+                  return prisma.action.create({
+                    data: {
+                      action: faker.lorem.sentence(),
+                      nodeId: node.id,
+                      nextNodeId: nextNode ? nextNode.id : null,
+                    },
+                  });
+                })
+              );
+            }
+
+            // Optionally set a random start node
+            if (nodes.length > 0) {
+              const startNode =
+                nodes[faker.number.int({ min: 0, max: nodes.length - 1 })];
+              await prisma.story.update({
+                where: { id: story.id },
+                data: { startNodeId: startNode.id },
+              });
+            }
+
+            return story;
+          }
+        )
       );
-      await prisma.action.createMany({ data: storyActions });
     }
 
-    console.log("Database has been seeded successfully.");
+    console.log("Database seeded successfully!");
   } catch (error) {
     console.error("Error seeding database:", error);
   } finally {
