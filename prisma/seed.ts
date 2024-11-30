@@ -16,7 +16,6 @@ async function main() {
           data: {
             email: faker.internet.email(),
             name: faker.person.fullName(),
-            // Add any other user fields you might have
           },
         });
       })
@@ -30,9 +29,9 @@ async function main() {
             // Create story
             const story = await prisma.story.create({
               data: {
-                title: faker.lorem.sentence(),
+                title: faker.book.title(),
                 description: faker.lorem.paragraph(),
-                isAiGenerated: faker.datatype.boolean(),
+                isAiGenerated: false,
                 userId: user.id,
               },
             });
@@ -43,7 +42,7 @@ async function main() {
                 async () => {
                   return prisma.node.create({
                     data: {
-                      content: faker.lorem.paragraph(),
+                      content: faker.lorem.paragraphs(),
                       storyId: story.id,
                     },
                   });
@@ -57,10 +56,8 @@ async function main() {
                 Array.from({
                   length: faker.number.int({ min: 1, max: 3 }),
                 }).map(async () => {
-                  // Randomly select next node or leave it null
                   const nextNode =
                     nodes[faker.number.int({ min: 0, max: nodes.length - 1 })];
-
                   return prisma.action.create({
                     data: {
                       action: faker.lorem.sentence(),
@@ -72,7 +69,7 @@ async function main() {
               );
             }
 
-            // Optionally set a random start node
+            // Set a random start node
             if (nodes.length > 0) {
               const startNode =
                 nodes[faker.number.int({ min: 0, max: nodes.length - 1 })];
