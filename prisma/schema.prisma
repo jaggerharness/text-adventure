@@ -16,9 +16,9 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  TextAdventure TextAdventure[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Story     Story[]
 }
 
 model Account {
@@ -60,7 +60,7 @@ model VerificationToken {
   @@id([identifier, token])
 }
 
-model TextAdventure {
+model Story {
   id            String  @id @default(cuid())
   title         String
   description   String?
@@ -77,12 +77,30 @@ model TextAdventure {
 }
 
 model StoryNode {
-  id              String     @id @default(cuid())
-  textAdventureId String
-  nextNodeId      String?    @unique
-  nextNode        StoryNode? @relation("NextNode", fields: [nextNodeId], references: [id])
-  previousNode    StoryNode? @relation("NextNode")
+  id           String        @id @default(cuid())
+  storyId      String
+  content      String
+  actions      StoryAction[]
+  nextNodeId   String?       @unique
+  nextNode     StoryNode?    @relation("NextNode", fields: [nextNodeId], references: [id])
+  previousNode StoryNode?    @relation("NextNode")
 
   // Relations
-  textAdventure TextAdventure @relation(fields: [textAdventureId], references: [id], onDelete: Cascade)
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model StoryAction {
+  id              String     @id @default(cuid())
+  nextNodeId      String?
+  belongsToNodeId String?
+  action          String
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  deletedAt       DateTime?
+  StoryNode       StoryNode? @relation(fields: [storyNodeId], references: [id])
+  storyNodeId     String?
 }
