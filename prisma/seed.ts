@@ -25,31 +25,27 @@ async function main() {
 
     // Create story nodes and actions
     for (const story of createdStories) {
-      const storyNodes = Array.from({ length: 5 }).map(() => ({
+      const nodes = Array.from({ length: 5 }).map(() => ({
         storyId: story.id,
         content: faker.lorem.paragraphs(),
       }));
-      await prisma.storyNode.createMany({ data: storyNodes });
-      const createdStoryNodes = await prisma.storyNode.findMany({
+      await prisma.node.createMany({ data: nodes });
+      const createdStoryNodes = await prisma.node.findMany({
         where: { storyId: story.id },
       });
 
       await prisma.story.update({
         where: { id: story.id },
-        data: { startStoryNodeId: createdStoryNodes[0].id },
+        data: { startNodeId: createdStoryNodes[0].id },
       });
 
       const storyActions = createdStoryNodes.flatMap((node) =>
         Array.from({ length: 2 }).map(() => ({
-          nextNodeId:
-            createdStoryNodes[
-              Math.floor(Math.random() * createdStoryNodes.length)
-            ].id,
-          belongsToNodeId: node.id,
+          nodeId: node.id,
           action: faker.lorem.sentence(),
         }))
       );
-      await prisma.storyAction.createMany({ data: storyActions });
+      await prisma.action.createMany({ data: storyActions });
     }
 
     console.log("Database has been seeded successfully.");

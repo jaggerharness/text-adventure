@@ -10,30 +10,26 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
     redirect("/adventures");
   }
 
-  console.log({ storyId });
-
-  const startStory = await prisma.story.findFirst({
+  const story = await prisma.story.findFirst({
     where: {
       id: storyId,
     },
     include: {
-      startStoryNode: true,
+      startNode: true,
     },
   });
-
-  console.log({ startStory });
 
   return (
     <div className="flex flex-col min-w-0 h-dvh bg-background">
       <div className="flex flex-col min-w-0 gap-6 flex-1 pt-4 px-2 pb-16">
         <div
-          key={startStory?.id}
+          key={story?.id}
           className={
             "flex gap-4rounded-xl bg-primary/20 px-3 w-fit mr-auto max-w-2xl py-2"
           }
-          data-role={startStory?.isAiGenerated}
+          data-role={story?.isAiGenerated}
         >
-          {startStory?.startStoryNode?.content}
+          {story?.startNode?.content}
         </div>
         <div className="pt-4 w-full text-center font-extrabold text-2xl underline underline-offset-2">
           Action Menu
