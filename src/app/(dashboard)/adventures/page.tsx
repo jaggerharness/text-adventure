@@ -9,24 +9,9 @@ import {
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { prisma } from "@/prisma";
 
-const stories = [
-  {
-    id: 1,
-    title: "The Dark Forest",
-    description: "Explore a forest full of psychological mysteries.",
-  },
-  {
-    id: 2,
-    title: "Space Odyssey",
-    description: "Embark on an interstellar journey to save humanity.",
-  },
-  {
-    id: 3,
-    title: "The Haunted Mansion",
-    description: "Uncover the secrets of a mysterious old house.",
-  },
-];
+const stories = await prisma.story.findMany();
 
 export default function AdventurePickerPage() {
   return (

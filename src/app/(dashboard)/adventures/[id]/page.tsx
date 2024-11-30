@@ -1,45 +1,40 @@
 import { Button } from "@/components/ui/button";
-import cx from "classnames";
+import { prisma } from "@/prisma";
+import { redirect } from "next/navigation";
 
-const mockData = [
-  {
-    id: 0,
-    role: 0 % 2 === 0 ? "user" : "ai",
-    message: `Message number 0`,
-  },
-];
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const storyId = params.id;
 
-for (let i = 1; i <= 40; i++) {
-  mockData.push({
-    id: i,
-    role: i % 2 === 0 ? "user" : "ai",
-    message: `Message number ${i}`,
+  if (!storyId) {
+    redirect("/adventures");
+  }
+
+  console.log({ storyId });
+
+  const startStory = await prisma.story.findFirst({
+    where: {
+      id: storyId,
+    },
+    include: {
+      startStoryNode: true,
+    },
   });
-}
 
-export default function StoryPage() {
+  console.log({ startStory });
+
   return (
     <div className="flex flex-col min-w-0 h-dvh bg-background">
       <div className="flex flex-col min-w-0 gap-6 flex-1 pt-4 px-2 pb-16">
-        {[...mockData].map((data) => (
-          <div
-            key={data.id}
-            className={cx(
-              "flex gap-4 w-full rounded-xl",
-              {
-                "bg-primary text-primary-foreground px-3 w-fit ml-auto max-w-2xl py-2":
-                  data.role === "user",
-              },
-              {
-                "bg-primary/20 px-3 w-fit mr-auto max-w-2xl py-2":
-                  data.role === "ai",
-              }
-            )}
-            data-role={data.role}
-          >
-            {data.message}
-          </div>
-        ))}
+        <div
+          key={startStory?.id}
+          className={
+            "flex gap-4rounded-xl bg-primary/20 px-3 w-fit mr-auto max-w-2xl py-2"
+          }
+          data-role={startStory?.isAiGenerated}
+        >
+          {startStory?.startStoryNode?.content}
+        </div>
         <div className="pt-4 w-full text-center font-extrabold text-2xl underline underline-offset-2">
           Action Menu
         </div>

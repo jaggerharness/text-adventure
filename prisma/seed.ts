@@ -23,26 +23,36 @@ async function main() {
     await prisma.story.createMany({ data: adventures });
     const createdStories = await prisma.story.findMany();
 
-    // Create story nodes
-    const storyParts = Array.from({ length: 100 }).map(() => ({
-      storyId:
-        createdStories[Math.floor(Math.random() * createdStories.length)].id,
-      content: faker.lorem.paragraphs(),
-    }));
-    await prisma.storyNode.createMany({ data: storyParts });
-    const createdStoryNodes = await prisma.storyNode.findMany();
+    // Create story nodes and actions
+    for (const story of createdStories) {
+      const storyNodes = Array.from({ length: 5 }).map(() => ({
+        storyId: story.id,
+        content: faker.lorem.paragraphs(),
+      }));
+      await prisma.storyNode.createMany({ data: storyNodes });
+      const createdStoryNodes = await prisma.storyNode.findMany({
+        where: { storyId: story.id },
+      });
 
-    // Create story actions
-    const storyActions = Array.from({ length: 200 }).map(() => ({
-      nextNodeId:
-        createdStoryNodes[Math.floor(Math.random() * createdStoryNodes.length)]
-          .id,
-      belongsToNodeId:
-        createdStoryNodes[Math.floor(Math.random() * createdStoryNodes.length)]
-          .id,
-      action: faker.lorem.sentence(),
-    }));
-    await prisma.storyAction.createMany({ data: storyActions });
+      await prisma.story.update({
+        where: { id: story.id },
+        data: { startStoryNodeId: createdStoryNodes[0].id },
+      });
+
+      const storyActions = createdStoryNodes.flatMap((node) =>
+        Array.from({ length: 2 }).map(() => ({
+          nextNodeId:
+            createdStoryNodes[
+              Math.floor(Math.random() * createdStoryNodes.length)
+            ].id,
+          belongsToNodeId: node.id,
+          action: faker.lorem.sentence(),
+        }))
+      );
+      await prisma.storyAction.createMany({ data: storyActions });
+    }
+
+    console.log("Database has been seeded successfully.");
   } catch (error) {
     console.error("Error seeding database:", error);
   } finally {

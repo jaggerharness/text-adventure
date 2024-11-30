@@ -18,7 +18,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Story     Story[]
+  // Story     Story[]
 }
 
 model Account {
@@ -67,40 +67,44 @@ model Story {
   isAiGenerated Boolean @default(false)
   createdBy     String?
 
-  // Relations
-  user      User?       @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  storyNode StoryNode[]
+  nodes Node[]
+
+  startNodeId String? @unique
+  startNode   Node?   @relation("StoryStartNode", fields: [startNodeId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
-model StoryNode {
-  id           String        @id @default(cuid())
-  storyId      String
-  content      String
-  actions      StoryAction[]
-  nextNodeId   String?       @unique
-  nextNode     StoryNode?    @relation("NextNode", fields: [nextNodeId], references: [id])
-  previousNode StoryNode?    @relation("NextNode")
+model Node {
+  id      String @id @default(cuid())
+  content String
 
-  // Relations
-  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  // This node belongs to a story
+  storyId String
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  // Each node has many actions
+  actions Action[]
+
+  // This node can be the start of many Stories
+  startedInStory Story? @relation("StoryStartNode")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
-model StoryAction {
-  id              String     @id @default(cuid())
-  nextNodeId      String?
-  belongsToNodeId String?
-  action          String
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  deletedAt       DateTime?
-  StoryNode       StoryNode? @relation(fields: [storyNodeId], references: [id])
-  storyNodeId     String?
+model Action {
+  id     String @id @default(cuid())
+  action String
+
+  // Each action belongs to a node
+  nodeId String
+  node   Node   @relation(fields: [nodeId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
