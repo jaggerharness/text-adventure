@@ -11,6 +11,7 @@ async function clearDatabase() {
 async function createUser() {
   return prisma.user.create({
     data: {
+      id: "abc",
       email: faker.internet.email(),
       name: faker.person.fullName(),
     },

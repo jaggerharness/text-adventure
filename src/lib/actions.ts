@@ -15,7 +15,7 @@ export async function createGameSession(storyId: string) {
   try {
     const existingSession = await prisma.gameSession.findFirst({
       where: {
-        userId: "cm456frxn0000i0knrq19dtmp",
+        userId: "abc",
         storyId,
       },
     });
@@ -31,12 +31,13 @@ export async function createGameSession(storyId: string) {
 
     const gameSession = await prisma.gameSession.create({
       data: {
-        userId: "cm456frxn0000i0knrq19dtmp",
+        userId: "abc",
         storyId: storyId,
       },
     });
     session.id = gameSession.id;
-  } catch {
+  } catch (error) {
+    console.log({ error });
     return {
       message: "Database Error: Failed to Create Game Session.",
     };
