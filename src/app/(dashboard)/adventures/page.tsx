@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
@@ -8,8 +7,8 @@ import {
 } from "@/components/ui/card";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { prisma } from "@/prisma";
+import { PlayButton } from "./components/play-button";
 
 const stories = await prisma.story.findMany();
 
@@ -29,9 +28,7 @@ export default function AdventurePickerPage() {
               <CardDescription>{story.description}</CardDescription>
             </CardHeader>
             <CardFooter>
-              <Link href={`/adventures/${story.id}`}>
-                <Button className="mx-auto">Start Adventure</Button>
-              </Link>
+              <PlayButton storyId={story.id} />
             </CardFooter>
           </Card>
         ))}
