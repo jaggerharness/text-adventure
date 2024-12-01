@@ -99,6 +99,9 @@ model Node {
   // Action that leads to this node
   incomingActions Action[] @relation("ActionToNode")
 
+  // Each node can be in many game steps
+  steps GameStep[]
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -116,7 +119,8 @@ model Action {
   nextNodeId String?
   nextNode   Node?   @relation("ActionToNode", fields: [nextNodeId], references: [id])
 
-  sessions GameSession[]
+  // Each action can be in many game steps
+  steps GameStep[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -128,9 +132,24 @@ model GameSession {
   userId  String
   storyId String
 
-  user    User     @relation(fields: [userId], references: [id])
-  story   Story    @relation(fields: [storyId], references: [id])
-  actions Action[]
+  user  User       @relation(fields: [userId], references: [id])
+  story Story      @relation(fields: [storyId], references: [id])
+  steps GameStep[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model GameStep {
+  id        String  @id @default(cuid())
+  sessionId String
+  nodeId    String
+  actionId  String?
+
+  gameSession GameSession @relation(fields: [sessionId], references: [id])
+  node        Node        @relation(fields: [nodeId], references: [id])
+  action      Action?     @relation(fields: [actionId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
