@@ -20,10 +20,13 @@ export async function createGameSession(storyId: string) {
       },
     });
 
+    // Later we'll allow to resume session from here.
     if (existingSession) {
-      return {
-        message: "Existing Session Error: User already has started session.",
-      };
+      await prisma.gameSession.delete({
+        where: {
+          id: existingSession.id,
+        },
+      });
     }
 
     const gameSession = await prisma.gameSession.create({

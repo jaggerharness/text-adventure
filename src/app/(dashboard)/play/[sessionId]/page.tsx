@@ -2,26 +2,35 @@ import { Button } from "@/components/ui/button";
 import { prisma } from "@/prisma";
 import { redirect } from "next/navigation";
 
-export default async function Page(props: { params: Promise<{ id: string }> }) {
+export default async function Page(props: {
+  params: Promise<{ sessionId: string }>;
+}) {
   const params = await props.params;
-  const storyId = params.id;
+  const sessionId = params.sessionId;
 
-  if (!storyId) {
+  if (!sessionId) {
     redirect("/adventures");
   }
 
-  const story = await prisma.story.findFirst({
+  const gameSession = await prisma.gameSession.findFirst({
     where: {
-      id: storyId,
+      id: sessionId,
     },
     include: {
-      startNode: {
+      story: {
         include: {
-          actions: true,
+          startNode: {
+            include: {
+              actions: true,
+            },
+          },
         },
       },
+      actions: true,
     },
   });
+
+  const story = gameSession?.story;
 
   return (
     <div className="flex flex-col min-w-0 h-dvh bg-background">
