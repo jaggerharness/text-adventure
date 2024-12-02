@@ -26,23 +26,31 @@ export default async function Page(props: {
           },
         },
       },
-      actions: true,
+      steps: {
+        include: {
+          node: true,
+        },
+      },
     },
   });
 
   const story = gameSession?.story;
 
+  console.log({ gameSession });
+
   return (
     <div className="flex flex-col min-w-0 h-dvh bg-background">
       <div className="flex flex-col min-w-0 gap-6 flex-1 pt-4 px-2 pb-16">
-        <div
-          key={story?.id}
-          className={
-            "flex gap-4rounded-xl bg-primary/20 px-3 w-fit mr-auto max-w-2xl py-2"
-          }
-        >
-          {story?.startNode?.content}
-        </div>
+        {gameSession?.steps.map((step) => (
+          <div
+            key={step?.id}
+            className={
+              "flex gap-4rounded-xl bg-primary/20 px-3 w-fit mr-auto max-w-2xl py-2"
+            }
+          >
+            {step.node.content}
+          </div>
+        ))}
         <div className="pt-4 w-full text-left text-xl">Actions</div>
         <div className="grid sm:grid-cols-2 gap-2 w-full">
           {story?.startNode?.actions.map((action, index) => {

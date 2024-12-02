@@ -29,10 +29,31 @@ export async function createGameSession(storyId: string) {
       });
     }
 
+    const story = await prisma.story.findFirst({
+      where: {
+        id: storyId,
+      },
+    });
+
+    if (!story || !story.startNodeId) {
+      return {
+        message: "Database Error: Story Not Found",
+      };
+    }
+
+    const startNodeId = story.startNodeId;
+
     const gameSession = await prisma.gameSession.create({
       data: {
         userId: "abc",
         storyId: storyId,
+        steps: {
+          create: [
+            {
+              nodeId: startNodeId,
+            },
+          ],
+        },
       },
     });
     session.id = gameSession.id;
