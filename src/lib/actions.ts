@@ -3,19 +3,22 @@
 import { prisma } from "@/prisma";
 import { redirect } from "next/navigation";
 
-interface CreateGameSession {
+interface CreateGameSessionId {
   id: string | null;
 }
 
 export async function createGameSession(storyId: string) {
-  const session: CreateGameSession = {
+  const session: CreateGameSessionId = {
     id: null,
   };
 
   try {
+    // TODO: this should be the auth user
+    const userId = "abc";
+
     const existingSession = await prisma.gameSession.findFirst({
       where: {
-        userId: "abc",
+        userId,
         storyId,
       },
     });
@@ -41,16 +44,14 @@ export async function createGameSession(storyId: string) {
       };
     }
 
-    const startNodeId = story.startNodeId;
-
     const gameSession = await prisma.gameSession.create({
       data: {
-        userId: "abc",
+        userId,
         storyId: storyId,
         steps: {
           create: [
             {
-              nodeId: startNodeId,
+              nodeId: story.startNodeId,
             },
           ],
         },
