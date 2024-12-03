@@ -7,6 +7,14 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum GameSessionStatus {
+  CREATED
+  STARTED
+  COMPLETED
+  ERRORED
+  DELETED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -128,9 +136,10 @@ model Action {
 }
 
 model GameSession {
-  id      String @id @default(cuid())
+  id      String            @id @default(cuid())
   userId  String
   storyId String
+  status  GameSessionStatus @default(CREATED)
 
   user  User       @relation(fields: [userId], references: [id])
   story Story      @relation(fields: [storyId], references: [id])

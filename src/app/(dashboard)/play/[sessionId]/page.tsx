@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { updateGameStep } from "@/lib/actions";
 import { prisma } from "@/prisma";
 import { redirect } from "next/navigation";
+import { GameSessionStatus } from "@prisma/client";
+import { ReviewForm } from "./components/review-form";
 
 export default async function Page(props: {
   params: Promise<{ sessionId: string }>;
@@ -72,30 +70,50 @@ export default async function Page(props: {
             )}
           </div>
         ))}
+        {gameSession?.status === GameSessionStatus.STARTED && (
+          <Card>
+            <CardHeader className="text-xl">Actions</CardHeader>
+            <CardContent className="grid auto-rows-fr sm:grid-cols-2 gap-2 w-full">
+              {gameSession?.steps
+                .at(endIndex)
+                ?.node.actions.map((action, index) => {
+                  return (
+                    <form
+                      key={action.id}
+                      action={updateGameStep.bind(null, {
+                        stepId: gameSession?.steps.at(endIndex)?.id ?? "",
+                        actionId: action.id,
+                        sessionId: sessionId,
+                        nextNodeId: action.nextNodeId ?? "",
+                      })}
+                    >
+                      <Button
+                        variant="outline"
+                        className="text-left p-4 text-sm flex-1 gap-1 sm:flex-col w-full h-full text-wrap justify-start items-start"
+                      >
+                        <span className="font-medium">{`Option ${
+                          index + 1
+                        }`}</span>
+                        <span className="text-muted-foreground">
+                          {action.action}
+                        </span>
+                      </Button>
+                    </form>
+                  );
+                })}
+            </CardContent>
+          </Card>
+        )}
         <Card>
-          <CardHeader className="text-xl">Actions</CardHeader>
-          <CardContent className="grid sm:grid-cols-2 gap-2 w-full">
-            {gameSession?.steps
-              .at(endIndex)
-              ?.node.actions.map((action, index) => {
-                return (
-                  <Button
-                    key={action.id}
-                    variant="outline"
-                    className="text-left px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto text-wrap justify-start items-start"
-                  >
-                    <span className="font-medium">{`Option ${index + 1}`}</span>
-                    <span className="text-muted-foreground">
-                      {action.action}
-                    </span>
-                    <span>{`DEBUG: ID: ${action.id} Leads to: ${action.nextNodeId}`}</span>
-                  </Button>
-                );
-              })}
-          </CardContent>
-          <CardFooter>
-            <Button className="ml-auto">Continue</Button>
-          </CardFooter>
+          {gameSession?.status === GameSessionStatus.COMPLETED && (
+            <div className="p-4">
+              <p className="font-bold">Thanks for playing!</p>
+              <p className="text-muted-foreground">
+                If you liked the story, please consider leaving a review below.
+              </p>
+              <ReviewForm />
+            </div>
+          )}
         </Card>
       </div>
     </div>

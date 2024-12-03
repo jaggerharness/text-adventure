@@ -1,6 +1,8 @@
 "use server";
 
 import { prisma } from "@/prisma";
+import { GameSessionStatus } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 interface CreateGameSessionId {
@@ -25,7 +27,7 @@ export async function createGameSession(storyId: string) {
 
     // Later we'll allow to resume session from here.
     if (existingSession) {
-      await prisma.gameSession.delete({
+      await prisma.gameSession.deleteMany({
         where: {
           id: existingSession.id,
         },
@@ -48,6 +50,7 @@ export async function createGameSession(storyId: string) {
       data: {
         userId,
         storyId: storyId,
+        status: GameSessionStatus.STARTED,
         steps: {
           create: [
             {
@@ -66,4 +69,62 @@ export async function createGameSession(storyId: string) {
   }
 
   redirect(`/play/${session.id}`);
+}
+
+export async function updateGameStep({
+  stepId,
+  actionId,
+  sessionId,
+  nextNodeId,
+}: {
+  stepId: string;
+  actionId: string;
+  sessionId: string;
+  nextNodeId: string;
+}) {
+  await prisma.gameStep.update({
+    where: {
+      id: stepId,
+    },
+    data: {
+      actionId: actionId,
+    },
+  });
+
+  const nextNode = await prisma.node.findFirst({
+    where: {
+      id: nextNodeId,
+    },
+    include: {
+      actions: true,
+    },
+  });
+
+  if (nextNode?.actions.length !== 0) {
+    await prisma.gameSession.update({
+      where: {
+        id: sessionId,
+      },
+      data: {
+        steps: {
+          create: [
+            {
+              nodeId: nextNodeId,
+            },
+          ],
+        },
+      },
+    });
+  } else {
+    await prisma.gameSession.update({
+      where: {
+        id: sessionId,
+      },
+      data: {
+        status: GameSessionStatus.COMPLETED,
+      },
+    });
+  }
+
+  revalidatePath(`/play/${sessionId}`);
 }
