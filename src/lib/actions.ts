@@ -91,31 +91,37 @@ export async function updateGameStep({
     },
   });
 
-  const nextNode = await prisma.node.findFirst({
+  const updatedSession = await prisma.gameSession.update({
     where: {
-      id: nextNodeId,
+      id: sessionId,
+    },
+    data: {
+      steps: {
+        create: [
+          {
+            nodeId: nextNodeId,
+          },
+        ],
+      },
     },
     include: {
-      actions: true,
+      steps: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 1,
+        include: {
+          node: {
+            include: {
+              actions: true,
+            },
+          },
+        },
+      },
     },
   });
 
-  if (nextNode?.actions.length !== 0) {
-    await prisma.gameSession.update({
-      where: {
-        id: sessionId,
-      },
-      data: {
-        steps: {
-          create: [
-            {
-              nodeId: nextNodeId,
-            },
-          ],
-        },
-      },
-    });
-  } else {
+  if (updatedSession.steps.at(0)?.node.actions.length === 0) {
     await prisma.gameSession.update({
       where: {
         id: sessionId,
