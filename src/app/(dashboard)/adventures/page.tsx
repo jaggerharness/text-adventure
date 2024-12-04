@@ -9,10 +9,25 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { prisma } from "@/prisma";
 import { PlayButton } from "./components/play-button";
+import { GameSessionStatus } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-const stories = await prisma.story.findMany();
+const userId = "abc";
 
-export default function AdventurePickerPage() {
+export default async function AdventurePickerPage() {
+  const stories = await prisma.story.findMany({
+    include: {
+      sessions: {
+        where: {
+          userId,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
+    },
+  });
   return (
     <div className="px-8 pb-8 pt-24 flex flex-col gap-4">
       <h1 className="text-3xl font-bold text-center">Choose Your Adventure</h1>
@@ -28,7 +43,18 @@ export default function AdventurePickerPage() {
               <CardDescription>{story.description}</CardDescription>
             </CardHeader>
             <CardFooter>
-              <PlayButton storyId={story.id} />
+              {(story.sessions.length === 0 ||
+                (story.sessions.length !== 0 &&
+                  story.sessions.at(0)?.status ===
+                    GameSessionStatus.COMPLETED)) && (
+                <PlayButton storyId={story.id} />
+              )}
+              {story.sessions.length !== 0 &&
+                story.sessions.at(0)?.status === GameSessionStatus.STARTED && (
+                  <Link href={`/play/${story.sessions.at(0)?.id}`}>
+                    <Button className="ml-auto">Continue</Button>
+                  </Link>
+                )}
             </CardFooter>
           </Card>
         ))}

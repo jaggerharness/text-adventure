@@ -18,22 +18,6 @@ export async function createGameSession(storyId: string) {
     // TODO: this should be the auth user
     const userId = "abc";
 
-    const existingSession = await prisma.gameSession.findFirst({
-      where: {
-        userId,
-        storyId,
-      },
-    });
-
-    // Later we'll allow to resume session from here.
-    if (existingSession) {
-      await prisma.gameSession.deleteMany({
-        where: {
-          id: existingSession.id,
-        },
-      });
-    }
-
     const story = await prisma.story.findFirst({
       where: {
         id: storyId,
