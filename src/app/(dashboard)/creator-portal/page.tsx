@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
 
 interface Story {
   id: number;
@@ -60,16 +61,6 @@ export default function CreatorPage() {
     setIsDialogOpen(true);
   };
 
-  const handleCreateNewStory = () => {
-    setEditingStory({
-      id: Date.now(),
-      title: "",
-      content: "",
-      createdAt: new Date().toISOString().split("T")[0],
-    });
-    setIsDialogOpen(true);
-  };
-
   const handleSaveStory = (updatedStory: Story) => {
     if (stories.find((s) => s.id === updatedStory.id)) {
       setStories(
@@ -85,7 +76,9 @@ export default function CreatorPage() {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Created Adventures</h1>
-        <Button onClick={handleCreateNewStory}>Create New Adventure</Button>
+        <Button asChild>
+          <Link href={"/creator-portal/create"}>Create New Adventure</Link>
+        </Button>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {stories.map((story) => (

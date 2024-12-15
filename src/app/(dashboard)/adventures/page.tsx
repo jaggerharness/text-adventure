@@ -36,28 +36,30 @@ export default async function AdventurePickerPage() {
         <Input placeholder="Search adventures" className="pl-8" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {stories.map((story) => (
-          <Card key={story.id}>
-            <CardHeader>
-              <CardTitle>{story.title}</CardTitle>
-              <CardDescription>{story.description}</CardDescription>
-            </CardHeader>
-            <CardFooter>
-              {(story.sessions.length === 0 ||
-                (story.sessions.length !== 0 &&
-                  story.sessions.at(0)?.status ===
-                    GameSessionStatus.COMPLETED)) && (
-                <PlayButton storyId={story.id} />
-              )}
-              {story.sessions.length !== 0 &&
-                story.sessions.at(0)?.status === GameSessionStatus.STARTED && (
-                  <Link href={`/play/${story.sessions.at(0)?.id}`}>
-                    <Button className="ml-auto">Continue</Button>
-                  </Link>
+        {stories &&
+          stories.map((story) => (
+            <Card key={story.id}>
+              <CardHeader>
+                <CardTitle>{story.title}</CardTitle>
+                <CardDescription>{story.description}</CardDescription>
+              </CardHeader>
+              <CardFooter>
+                {(story.sessions.length === 0 ||
+                  (story.sessions.length !== 0 &&
+                    story.sessions.at(0)?.status ===
+                      GameSessionStatus.COMPLETED)) && (
+                  <PlayButton storyId={story.id} />
                 )}
-            </CardFooter>
-          </Card>
-        ))}
+                {story.sessions.length !== 0 &&
+                  story.sessions.at(0)?.status ===
+                    GameSessionStatus.STARTED && (
+                    <Link href={`/play/${story.sessions.at(0)?.id}`}>
+                      <Button className="ml-auto">Continue</Button>
+                    </Link>
+                  )}
+              </CardFooter>
+            </Card>
+          ))}
       </div>
       <div className="flex justify-center"></div>
     </div>
